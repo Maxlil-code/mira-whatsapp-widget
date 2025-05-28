@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mira Widget Examples</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+        background: #f2f9fd;
+      }
+      .example-panel {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 12px rgba(16, 37, 66, 0.1);
+      }
+      .test-panel {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+      h1 {
+        color: #102542;
+        margin-bottom: 1em;
+      }
+      h2 {
+        color: #064783;
+        margin-top: 0;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #102542;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #e5e5e5;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      input:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #4834d4;
+        box-shadow: 0 0 0 2px rgba(72, 52, 212, 0.1);
+      }
+      button {
+        background: #102542;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      button:hover {
+        background: #4834d4;
+        transform: translateY(-1px);
+      }
+      .code-example {
+        background: #f9fafa;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        overflow-x: auto;
+      }
+      pre {
+        margin: 0;
+        font-family: "Consolas", monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mira Widget Examples</h1>
+
+    <div class="example-panel">
+      <h2>Live Configuration</h2>
+      <div class="code-example">
+        <pre><code>// Basic implementation
+&lt;script&gt;    window.MiraWidgetConfig = {
+        whatsappMessage: "Optional message",
+        titleText: "Your Title",
+        subText: "Your Subtitle"
+    };
+&lt;/script&gt;
+&lt;script src="../dist/mira-widget.min.js"&gt;&lt;/script&gt;</code></pre>
+      </div>
+
+      <div class="test-panel">
+        <h2>Test Configuration</h2>
+        <div class="form-group">
+          <label for="whatsappMessage">WhatsApp Message:</label>
+          <textarea
+            id="whatsappMessage"
+            rows="3"
+            placeholder="Enter default WhatsApp message"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="titleText">Title Text:</label>
+          <input
+            type="text"
+            id="titleText"
+            value="Applying from outside Germany?"
+          />
+        </div>
+        <div class="form-group">
+          <label for="subText">Sub Text:</label>
+          <input
+            type="text"
+            id="subText"
+            value="Apply with Mira.Ai"
+          />
+        </div>
+        <button onclick="updateWidget()">Update Widget</button>
+        <button onclick="resetWidget()">Reset to Defaults</button>
+      </div>
+    </div>
+
+    <script>
+      function updateWidget() {
+        // Remove existing widget if any
+        if (window.MiraCustomWidget) {
+          window.MiraCustomWidget.remove();
+        }
+
+        // Update configuration
+        window.MiraWidgetConfig = {
+          whatsappMessage: document.getElementById("whatsappMessage").value,
+          titleText: document.getElementById("titleText").value,
+          subText: document.getElementById("subText").value,
+        };
+
+        // Load the widget script
+        const script = document.createElement("script");
+        script.src = "../dist/mira-widget.min.js";
+        document.body.appendChild(script);
+      }
+
+      function resetWidget() {
+        // Reset form to defaults            
+        document.getElementById('whatsappMessage').value = '';
+        document.getElementById("titleText").value =
+          "Applying from outside Germany?";
+        document.getElementById("subText").value =
+          "Apply with Mira.Ai by Workabroad";
+
+        // Update widget with defaults
+        updateWidget();
+      }
+
+      // Initial widget load
+      updateWidget();
+    </script>
+  </body>
+</html>
