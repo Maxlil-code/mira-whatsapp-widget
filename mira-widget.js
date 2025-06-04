@@ -14,6 +14,7 @@
     whatsappMessage: "",
     titleText: "Applying from outside Germany?",
     subText: "Apply with Mira.Ai",
+    position: "bottom-right",
   };
 
   // Validation function
@@ -40,31 +41,37 @@
   let isOpen = false;
 
   function createWidget() {
+    const container = document.getElementById(config.containerId);
+  if (!container) {
+    console.error(`Mira Widget: Container with id "${config.containerId}" not found`);
+    return;
+  }
     // Create styles
     const styles = `
             .mira-custom-widget {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                z-index: 9999;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              position: relative;
+              width: 100%;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             }
             
             /* QR Dropdown Animation */
-            .mira-custom-widget .qr-dropdown {
-                width: 350px;
-                background: #FFFFFF;
-                border-radius: 16px;
-                box-shadow: 0 4px 20px rgba(16, 37, 66, 0.15);
-                overflow: hidden;
-                max-height: 0;
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-                margin-bottom: 0;
-                transform: translateY(10px) scale(0.95);
-                transform-origin: bottom center;
-                border: 1px solid #e5e5e5;
+           .mira-custom-widget .qr-dropdown {
+              background: #ffffff;
+              border-radius: 16px;
+              box-shadow: 0 4px 20px rgba(16, 37, 66, 0.15);
+              overflow: hidden;
+              max-height: 0;
+              opacity: 0;
+              visibility: hidden;
+              transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+              transform: translateY(10px) scale(0.95);
+              transform-origin: bottom center;
+              border: 1px solid #e5e5e5;
+              position: absolute;
+              width: 250px;
+              right: 0;
+              bottom: 100%;
+              margin-bottom: 10px;
             }
             
             .mira-custom-widget.open .qr-dropdown {
@@ -77,23 +84,25 @@
 
             /* Main Trigger Button */
             .mira-custom-widget .widget-trigger {
-                width: 350px;
-                background: linear-gradient(135deg, #102542, #064783);
-                background-size: 200% 200%;
-                border-radius: 16px;
-                box-shadow: 0 4px 20px rgba(16, 37, 66, 0.15);
-                cursor: pointer;
-                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-                overflow: hidden;
-                color: white;
-                border: 2px solid rgba(255, 255, 255, 0.1);
+              width: 100%;
+              max-width: 250px;
+              margin-left: auto;
+              background: linear-gradient(135deg, #102542, #064783);
+              background-size: 200% 200%;
+              border-radius: 16px;
+              box-shadow: 0 4px 20px rgba(16, 37, 66, 0.15);
+              cursor: pointer;
+              transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+              overflow: hidden;
+              color: white;
+              border: 2px solid rgba(255, 255, 255, 0.1);
             }
             
             .mira-custom-widget .widget-trigger:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 30px rgba(16, 37, 66, 0.2);
-                background: linear-gradient(135deg, #102542, #4834D4);
-                background-position: right center;
+              transform: translateY(-2px);
+              box-shadow: 0 8px 30px rgba(16, 37, 66, 0.2);
+              background: linear-gradient(135deg, #102542, #4834D4);
+              background-position: right center;
             }
 
             /* Content Layout */
@@ -322,6 +331,32 @@
         widget.style.transform = "translateY(0)";
       });
     }, 100);
+
+    // Update styles dynamically based on position
+    const positionStyles = {
+      "bottom-right": { bottom: "20px", right: "20px" },
+      "bottom-left": { bottom: "20px", left: "20px" },
+      "top-right": { top: "20px", right: "20px" },
+      "top-left": { top: "20px", left: "20px" },
+    };
+
+    const selectedPosition = positionStyles[config.position] || positionStyles["bottom-right"];
+
+    // Apply position styles dynamically
+    Object.assign(widget.style, selectedPosition);
+
+    // Adjust dropdown animation and positioning based on widget position
+    if (config.position.startsWith("top")) {
+      const dropdown = widget.querySelector(".qr-dropdown");
+      dropdown.style.transformOrigin = "top center";
+      dropdown.style.marginTop = "10px";
+      dropdown.style.marginBottom = "0";
+      dropdown.style.transform = "translateY(-10px) scale(0.95)";
+
+      widget.classList.add("top-position");
+    } else {
+      widget.classList.add("bottom-position");
+    }
 
     // Expose control functions
     window.MiraCustomWidget = {
