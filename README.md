@@ -181,6 +181,3 @@ Pull requests are welcome! Please open an issue first to discuss any big change.
 
 [MIT](LICENSE)
 
----
-
-**Happy chatting 👋**
