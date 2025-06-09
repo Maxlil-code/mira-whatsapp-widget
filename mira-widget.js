@@ -11,7 +11,7 @@
 
   // Default configuration
   const defaultConfig = {
-    whatsappMessage: "",
+    whatsappMessage: "Hello Mira",
     titleText: "Applying from outside Germany?",
     subText: "Apply with Mira.Ai",
     position: "bottom-right",
