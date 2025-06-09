@@ -6,21 +6,15 @@
     <title>Mira Widget Test</title>
   </head>
   <body>
-    <style>
-      #mira-widget-container {
-        height: 100vh;
-        width: 100vw;
-      }
-    </style>
-    <div id="mira-widget-container"></div>
     <script>
       window.MiraWidgetConfig = {
-        whatsappMessage: "Optional default message",
+        whatsappMessage: "Hi! Floating widget test",
         titleText: "Applying from outside Germany?",
         subText: "Apply via Mira.AI",
-        containerId: "mira-widget-container",
+        position: "bottom-right",
+        // No containerId = floating mode
       };
     </script>
-    <script src="mira-widget.js"></script>
+    <script src="dist/mira-widget.min.js"></script>
   </body>
 </html>

@@ -41,19 +41,58 @@
   let isOpen = false;
 
   function createWidget() {
-    const container = document.getElementById(config.containerId);
-  if (!container) {
-    console.error(`Mira Widget: Container with id "${config.containerId}" not found`);
-    return;
-  }
-    // Create styles
+    // Determine mode based on containerId
+    const isEmbeddedMode = !!config.containerId;
+    let targetContainer = document.body;
+
+    // For embedded mode, find the target container
+    if (isEmbeddedMode) {
+      const container = document.getElementById(config.containerId);
+      if (!container) {
+        console.error(
+          `Mira Widget: Container with id "${config.containerId}" not found`
+        );
+        return;
+      }
+      targetContainer = container;
+    }
+
+    // Create styles (same as before)
     const styles = `
             .mira-custom-widget {
               position: relative;
               width: 100%;
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             }
+
+            .mira-custom-widget.embedded-mode {
+              position: relative !important;
+              width: 250px !important;
+              height: 100% !important;
+              top: auto !important;
+              bottom: auto !important;
+              left: auto !important;
+              right: auto !important;
+            }
+
+            .mira-custom-widget.embedded-mode .widget-trigger {
+              max-width: none;
+              margin-left: 0;
+            }
+
+            /* Floating mode styles */
+            .mira-custom-widget.floating-mode {
+              position: fixed !important;
+              z-index: 9999;
+              width: auto !important;
+            }
             
+            /* Add floating mode styles */
+            .mira-custom-widget.floating-mode {
+              position: fixed !important;
+              z-index: 9999;
+              width: auto !important;
+            }
             /* QR Dropdown Animation */
            .mira-custom-widget .qr-dropdown {
               background: #ffffff;
@@ -252,9 +291,7 @@
 
     // Inject styles
     const styleSheet = document.createElement("style");
-
     styleSheet.textContent = styles;
-
     document.head.appendChild(styleSheet);
 
     // Create WhatsApp URL with message
@@ -265,7 +302,7 @@
     }`;
     // Create widget HTML
     const widgetHTML = `
-                <div class="mira-custom-widget" id="mira-custom-widget">
+                <div class="mira-custom-widget ${isEmbeddedMode ? 'embedded-mode' : 'floating-mode'}" id="mira-custom-widget">
                 <div class="qr-dropdown">
                 <div class="qr-content">
                 <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
@@ -294,11 +331,48 @@
         `;
 
     // Add widget to page
-    document.body.insertAdjacentHTML("beforeend", widgetHTML);
+    targetContainer.insertAdjacentHTML("beforeend", widgetHTML);
 
     // Get elements
     const widget = document.getElementById("mira-custom-widget");
     const trigger = document.getElementById("widget-trigger");
+
+    // Only apply positioning for floating mode
+  if (!isEmbeddedMode) {
+    const positionStyles = {
+      "bottom-right": { bottom: "20px", right: "20px" },
+      "bottom-left": { bottom: "20px", left: "20px" },
+      "top-right": { top: "20px", right: "20px" },
+      "top-left": { top: "20px", left: "20px" },
+    };
+
+    const selectedPosition = positionStyles[config.position] || positionStyles["bottom-right"];
+    Object.assign(widget.style, selectedPosition);
+
+    // Adjust dropdown for top positions
+    if (config.position.startsWith("top")) {
+      const dropdown = widget.querySelector(".qr-dropdown");
+      dropdown.style.transformOrigin = "top center";
+      dropdown.style.marginTop = "10px";
+      dropdown.style.marginBottom = "0";
+      dropdown.style.transform = "translateY(-10px) scale(0.95)";
+      widget.classList.add("top-position");
+    } else {
+      widget.classList.add("bottom-position");
+    }
+
+    // Entrance animation for floating mode only
+    setTimeout(() => {
+      widget.style.opacity = "0";
+      widget.style.transform = "translateY(100px)";
+      widget.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+
+      requestAnimationFrame(() => {
+        widget.style.opacity = "1";
+        widget.style.transform = "translateY(0)";
+      });
+    }, 100);
+  }
 
     // Toggle functionality
     function toggleWidget() {
@@ -340,7 +414,8 @@
       "top-left": { top: "20px", left: "20px" },
     };
 
-    const selectedPosition = positionStyles[config.position] || positionStyles["bottom-right"];
+    const selectedPosition =
+      positionStyles[config.position] || positionStyles["bottom-right"];
 
     // Apply position styles dynamically
     Object.assign(widget.style, selectedPosition);
