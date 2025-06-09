@@ -118,7 +118,7 @@
             /* Main Trigger Button */
             .mira-custom-widget .widget-trigger {
               width: 100%;
-              max-width: 250px;
+              width: 250px;
               margin-left: auto;
               background: linear-gradient(135deg, #102542, #064783);
               background-size: 200% 200%;
