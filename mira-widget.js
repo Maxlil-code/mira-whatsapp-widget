@@ -87,12 +87,6 @@
               width: auto !important;
             }
             
-            /* Add floating mode styles */
-            .mira-custom-widget.floating-mode {
-              position: fixed !important;
-              z-index: 9999;
-              width: auto !important;
-            }
             /* QR Dropdown Animation */
            .mira-custom-widget .qr-dropdown {
               background: #ffffff;
@@ -389,49 +383,6 @@
         toggleWidget();
       }
     });
-
-    // Entrance animation
-
-    setTimeout(() => {
-      widget.style.opacity = "0";
-
-      widget.style.transform = "translateY(100px)";
-
-      widget.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-
-      requestAnimationFrame(() => {
-        widget.style.opacity = "1";
-
-        widget.style.transform = "translateY(0)";
-      });
-    }, 100);
-
-    // Update styles dynamically based on position
-    const positionStyles = {
-      "bottom-right": { bottom: "20px", right: "20px" },
-      "bottom-left": { bottom: "20px", left: "20px" },
-      "top-right": { top: "20px", right: "20px" },
-      "top-left": { top: "20px", left: "20px" },
-    };
-
-    const selectedPosition =
-      positionStyles[config.position] || positionStyles["bottom-right"];
-
-    // Apply position styles dynamically
-    Object.assign(widget.style, selectedPosition);
-
-    // Adjust dropdown animation and positioning based on widget position
-    if (config.position.startsWith("top")) {
-      const dropdown = widget.querySelector(".qr-dropdown");
-      dropdown.style.transformOrigin = "top center";
-      dropdown.style.marginTop = "10px";
-      dropdown.style.marginBottom = "0";
-      dropdown.style.transform = "translateY(-10px) scale(0.95)";
-
-      widget.classList.add("top-position");
-    } else {
-      widget.classList.add("bottom-position");
-    }
 
     // Expose control functions
     window.MiraCustomWidget = {
